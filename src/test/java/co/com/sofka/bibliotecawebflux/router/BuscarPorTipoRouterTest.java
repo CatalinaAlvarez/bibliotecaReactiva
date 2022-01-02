@@ -5,6 +5,7 @@ import co.com.sofka.bibliotecawebflux.dto.RecursoDTO;
 import co.com.sofka.bibliotecawebflux.mapper.RecursoMapper;
 import co.com.sofka.bibliotecawebflux.repository.RepositorioRecurso;
 import co.com.sofka.bibliotecawebflux.useCases.UseCaseBuscarPorArea;
+import co.com.sofka.bibliotecawebflux.useCases.UseCaseBuscarPorTipo;
 import co.com.sofka.bibliotecawebflux.utils.Area;
 import co.com.sofka.bibliotecawebflux.utils.Tipo;
 import org.assertj.core.api.Assertions;
@@ -27,8 +28,8 @@ import static org.mockito.Mockito.when;
 
 @WebFluxTest
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes= {BuscarPorAreaRouter.class, UseCaseBuscarPorArea.class, RecursoMapper.class})
-class BuscarPorAreaRouterTest {
+@ContextConfiguration(classes= {BuscarPorTipoRouter.class, UseCaseBuscarPorTipo.class, RecursoMapper.class})
+class BuscarPorTipoRouterTest {
 
     @MockBean
     RepositorioRecurso repositorio;
@@ -40,7 +41,7 @@ class BuscarPorAreaRouterTest {
     public void buscarPorAreaTest(){
         Recurso recurso1 = new Recurso();
         recurso1.setId("xxx");
-        recurso1.setArea(Area.ARTES);
+        recurso1.setArea(Area.CIENCIAS);
         recurso1.setDisponible(true);
         recurso1.setTipo(Tipo.DOCUMENTAL);
         recurso1.setNombre("Documental");
@@ -50,26 +51,26 @@ class BuscarPorAreaRouterTest {
         recurso2.setId("yyy");
         recurso2.setArea(Area.ARTES);
         recurso2.setDisponible(true);
-        recurso2.setTipo(Tipo.LIBRO);
+        recurso2.setTipo(Tipo.DOCUMENTAL);
         recurso2.setNombre("Libro");
         recurso2.setFecha(LocalDate.now());
 
         Mono<Recurso> recursoMono = Mono.just(recurso1);
 
-        when(repositorio.findByArea(recurso1.getArea().toString())).thenReturn(Flux.just(recurso1, recurso2));
+        when(repositorio.findByTipo(recurso1.getTipo().toString())).thenReturn(Flux.just(recurso1, recurso2));
 
         webTestClient.get()
-                .uri("/recursos/filtrarArea/ARTES")
+                .uri("/recursos/filtrarTipo/DOCUMENTAL")
                 .exchange()
                 .expectStatus().isOk()
                 .expectBodyList(RecursoDTO.class)
                 .value(userResponse -> {
-                            Assertions.assertThat(userResponse.get(0).getArea()).isEqualTo(recurso1.getArea());
-                            Assertions.assertThat(userResponse.get(1).getArea()).isEqualTo(recurso2.getArea());
+                            Assertions.assertThat(userResponse.get(0).getTipo()).isEqualTo(recurso1.getTipo());
+                            Assertions.assertThat(userResponse.get(1).getTipo()).isEqualTo(recurso2.getTipo());
                         }
                 );
 
-        Mockito.verify(repositorio,Mockito.times(1)).findByArea("ARTES");
+        Mockito.verify(repositorio,Mockito.times(1)).findByTipo("DOCUMENTAL");
     }
 
 }

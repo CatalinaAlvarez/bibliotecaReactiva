@@ -10,6 +10,7 @@ import co.com.sofka.bibliotecawebflux.utils.Tipo;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -63,6 +64,8 @@ class ObtenerPorIdRouterTest {
 
                         }
                 );
+
+        Mockito.verify(repositorio,Mockito.times(1)).findById("xxx");
     }
 
 }

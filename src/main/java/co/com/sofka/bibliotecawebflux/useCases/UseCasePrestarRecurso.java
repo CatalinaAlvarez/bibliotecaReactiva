@@ -2,7 +2,6 @@ package co.com.sofka.bibliotecawebflux.useCases;
 
 
 import co.com.sofka.bibliotecawebflux.collections.Recurso;
-import co.com.sofka.bibliotecawebflux.dto.RecursoDTO;
 import co.com.sofka.bibliotecawebflux.mapper.RecursoMapper;
 import co.com.sofka.bibliotecawebflux.repository.RepositorioRecurso;
 import org.springframework.stereotype.Service;
@@ -24,9 +23,11 @@ public class UseCasePrestarRecurso implements ObtenerDisponibilidad {
         this.mapper = mapper;
     }
 
+
     @Override
     public Mono<String> get(String id) {
         Mono<Recurso> recursoMono = repositorio.findById(id);
+
         return recursoMono.flatMap(r -> {
             if (r.isDisponible()) {
                 r.setDisponible(false);
